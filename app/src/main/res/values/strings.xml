@@ -4,4 +4,7 @@
     <!-- FILTER OPTIONS LABELS -->
     <string name="most_popular">Most Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="details_activity_label">Movie Details</string>
+    <string name="details_date_label">Release Date: </string>
+    <string name="details_rating_label">Rating: </string>
 </resources>
