@@ -3,10 +3,12 @@ package com.example.android.popularmovies;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -34,29 +37,32 @@ public class MainActivity extends AppCompatActivity {
     RecyclerViewAdapter adapter;
     RequestQueue queue;
     JSONObject responseObject;
+    String responseString;
     BottomNavigationView bnvMenuView;
     RecyclerView recyclerView;
+    GridLayoutManager layoutManager;
+    public static LinearLayoutManager.SavedState mBundleRecyclerViewState;
     ProgressBar loadingIndicator;
 
 
 
     private String API_KEY;
     private static final int GRID_SPAN_COUNT = 2;
+    private static final String LIST_INSTANCE_STATE = "list_instance_state";
+    private static final String MOVIES_JSON_STRING = "movies_json_string";
     private static final String BASE_URI = "https://api.themoviedb.org/3/movie";
     private static final String MOST_POPULAR_URI = BASE_URI+"/popular";
     private static final String TOP_RATED_URI = BASE_URI+"/top_rated";
 
-    protected String sort_mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (null != savedInstanceState && savedInstanceState.containsKey("sort_mode")) {
-            sort_mode = savedInstanceState.getString("sort_mode");
-        } else {
-            // sort_mode = "popular";
+        if (null != savedInstanceState) {
+            mBundleRecyclerViewState = savedInstanceState.getParcelable(LIST_INSTANCE_STATE);
+            responseString = savedInstanceState.getString(MOVIES_JSON_STRING);
         }
 
 
@@ -70,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         API_KEY = getString(R.string.themoviedb_api_key);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+        layoutManager = new GridLayoutManager(this, GRID_SPAN_COUNT);
+
         adapter = new RecyclerViewAdapter(this, new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onClick(View view, MovieItem movie) {
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, GRID_SPAN_COUNT));
+        recyclerView.setLayoutManager(layoutManager);
 
         bnvMenuView = (BottomNavigationView) findViewById(R.id.bnv_navigation);
 
@@ -105,15 +113,32 @@ public class MainActivity extends AppCompatActivity {
 
         // loadData("popular");
 
-        if (null == sort_mode) {
+        if (null == savedInstanceState) {
             loadData("popular"); // init
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString("sort_mode", sort_mode);
         super.onSaveInstanceState(outState);
+        outState.putParcelable(LIST_INSTANCE_STATE, recyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putString(MOVIES_JSON_STRING, responseString);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // restore movies data
+        if (responseString != null) {
+            adapter.setData(new MovieList().fromJSON(responseString));
+        }
+
+        // restore RecyclerView state
+        if (mBundleRecyclerViewState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(mBundleRecyclerViewState);
+        }
     }
 
     @Override
@@ -148,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean loadData(String handle) {
-        sort_mode = handle;
 
         // Request a string response from the provided URL.
         String url = getUrl(handle, 1);
@@ -157,18 +181,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // Update data and notify Adapter
-                        try {
-                            responseObject = new JSONObject(response);
-                            JSONArray results = responseObject.getJSONArray("results");
-                            List<MovieItem> mResults = new ArrayList<>();
-                            for (int i=0;i<results.length();i++) {
-                                mResults.add(new MovieItem(results.getJSONObject(i)));
-                            }
-                            adapter.setMovieData(mResults);
-                        } catch (JSONException ex) {
-                            // TODO (3): Handle JSON exception
-                            ex.printStackTrace();
-                        }
+                        adapter.setData(new MovieList().fromJSON(response));
+
+                        // Save response for Instance Restore
+                        responseString = response;
 
                         // Hide loader
                         loadingIndicator.setVisibility(View.INVISIBLE);

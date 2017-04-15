@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,7 +25,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ItemViewHolder> {
 
     private Context context;
-    private List<MovieItem> movies;
+    private MovieList movies;
     private final OnItemClickListener clickListener;
 
     private static final String POSTER_PATH = "poster_path";
@@ -84,9 +87,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return movies.size();
     }
 
-    public void setMovieData(List<MovieItem> data) {
+    public void setData(MovieList data) {
         movies = data;
 
         notifyDataSetChanged();
+    }
+
+    public MovieList getData() {
+        return movies;
     }
 }
