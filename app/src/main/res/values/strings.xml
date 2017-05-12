@@ -4,7 +4,25 @@
     <!-- FILTER OPTIONS LABELS -->
     <string name="most_popular">Most Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="favorites">Favorites</string>
+    <string name="mark_favorite">Mark as Favorite</string>
+    <string name="unmark_favorite">Unmark as Favorite</string>
     <string name="details_activity_label">Movie Details</string>
     <string name="details_date_label">Release Date: </string>
     <string name="details_rating_label">Rating: </string>
+
+    <!-- PAGER STRIP OPTION LABELS -->
+    <string name="tab_label_overview">OVERVIEW</string>
+    <string name="tab_label_reviews">REVIEWS</string>
+    <string name="tab_label_videos">VIDEOS</string>
+
+    <!-- ERROR MESSAGES -->
+    <string name="error_message">I was unable to fetch your movie list. Would you like some coffee instead?</string>
+    <string name="reviews_error_message">I was unable to fetch reviews. Would you like some coffee instead?</string>
+    <string name="videos_error_message">I was unable to fetch videos. Would you like some coffee instead?</string>
+
+    <!-- NO ITEMS MESSAGES-->
+    <string name="empty_reviews">No reviews yet</string>
+    <string name="empty_videos">No videos yet</string>
+
 </resources>

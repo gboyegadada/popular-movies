@@ -1,27 +1,48 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.os.Bundle;
+import android.support.v4.view.PagerTitleStrip;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
-import com.squareup.picasso.Picasso;
+import com.example.android.popularmovies.data.FavoritesContract;
+import com.example.android.popularmovies.fragment.OverviewFragment;
+import com.example.android.popularmovies.fragment.ReviewsFragment;
+import com.example.android.popularmovies.fragment.VideosFragment;
 
 import org.parceler.Parcels;
 
-public class DetailsActivity extends AppCompatActivity {
-    MovieItem movie_data;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
-    ImageView poster;
-    TextView main_title;
-    TextView release_year;
-    TextView running_time;
-    TextView rating;
-    TextView overview;
+public class DetailsActivity extends AppCompatActivity {
+    MovieItem mMovieData;
+    Button mFavoriteButton;
+    private DetailsPagerAdapter mPagerAdapter;
+    private ViewPager mPager;
+
+    private static final String TAG = DetailsActivity.class.getSimpleName();
+
+    /*
+     * This number will uniquely identify our Loader and is chosen arbitrarily. You can change this
+     * to any number you like, as long as you use the same variable name.
+     */
+    private static final int DETAILS_ACTIVITY_LOADER = 35;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,26 +50,9 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        movie_data = Parcels.unwrap(getIntent().getParcelableExtra("movie_data"));
+        mMovieData = Parcels.unwrap(getIntent().getParcelableExtra("movie_data"));
 
-        poster = (ImageView) findViewById(R.id.iv_poster);
-        main_title = (TextView) findViewById(R.id.tv_details_header);
-        release_year = (TextView) findViewById(R.id.tv_release_year);
-        running_time = (TextView) findViewById(R.id.tv_running_time);
-        rating = (TextView) findViewById(R.id.tv_rating);
-        overview = (TextView) findViewById(R.id.tv_overview);
-
-        Picasso.with(this)
-                .load("http://image.tmdb.org/t/p/w500"+movie_data.poster_path)
-                .into(poster);
-        main_title.setText(movie_data.title);
-
-        String [] dateParts = movie_data.release_date.split("-");
-
-        release_year.setText(dateParts[0]);
-        running_time.setText(getString(R.string.details_date_label)+" "+movie_data.release_date); // movie_data.running_time;
-        rating.setText(getString(R.string.details_rating_label)+" "+movie_data.vote_average + "/10");
-        overview.setText(movie_data.overview);
+        initialisePaging();
 
     }
 
@@ -75,7 +79,52 @@ public class DetailsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+
+        if (mPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed();
+            overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+        } else {
+            // Otherwise, select the previous step.
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
+    }
+
+
+
+    private void initialisePaging() {
+        List<Fragment> fragments = new Vector<Fragment>();
+        List<String> labels = new ArrayList<>();
+
+        // Tab Labels
+        labels.add(getString(R.string.tab_label_overview));
+        labels.add(getString(R.string.tab_label_reviews));
+        labels.add(getString(R.string.tab_label_videos));
+
+        // Fragments
+        Bundle args = new Bundle();
+        args.putParcelable("movie_data", Parcels.wrap(mMovieData));
+
+        Fragment overviewFragment = Fragment.instantiate(this, OverviewFragment.class.getName());
+        overviewFragment.setArguments(args);
+        fragments.add(overviewFragment);
+
+
+        Fragment reviewsFragment = Fragment.instantiate(this, ReviewsFragment.class.getName());
+        reviewsFragment.setArguments(args);
+        fragments.add(reviewsFragment);
+
+        Fragment videosFragment = Fragment.instantiate(this, VideosFragment.class.getName());
+        videosFragment.setArguments(args);
+        fragments.add(videosFragment);
+
+        this.mPagerAdapter = new DetailsPagerAdapter(super.getSupportFragmentManager(), fragments, labels);
+        mPager = (ViewPager) super.findViewById(R.id.vp_movie_details);
+        mPager.setAdapter(this.mPagerAdapter);
+        mPager.setCurrentItem(0);
+
+        PagerTitleStrip pagerStrip = (PagerTitleStrip) findViewById(R.id.pts_movie_details);
+        // TODO: add underline for selected title strip
     }
 }

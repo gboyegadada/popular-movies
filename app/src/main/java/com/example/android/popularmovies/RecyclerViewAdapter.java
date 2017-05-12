@@ -26,13 +26,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private Context context;
     private MovieList movies;
-    private final OnItemClickListener clickListener;
+    private final MainActivity.OnItemClickListener clickListener;
 
-    private static final String POSTER_PATH = "poster_path";
-    private static final String TITLE = "title";
-    private static final String OVERVIEW = "overview";
 
-    public RecyclerViewAdapter(Context parent, OnItemClickListener listener) {
+    public RecyclerViewAdapter(Context parent, MainActivity.OnItemClickListener listener) {
 
         context = parent;
         clickListener = listener;
@@ -56,10 +53,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
-    public interface OnItemClickListener {
-        void onClick(View view, MovieItem item);
-    }
-
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -78,6 +71,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         // holder.overview.setText(movie.getString(OVERVIEW));
         Picasso.with(context)
                 .load("http://image.tmdb.org/t/p/w500"+movie.poster_path)
+                .placeholder(R.drawable.ic_movie_poster_placeholder)
+                .error(R.drawable.ic_broken_image)
                 .into(holder.imageView);
     }
 
@@ -93,7 +88,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 
+    /*
     public MovieList getData() {
         return movies;
     }
+    */
 }
