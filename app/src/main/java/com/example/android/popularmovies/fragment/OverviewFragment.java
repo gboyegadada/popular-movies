@@ -4,11 +4,13 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +59,8 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
         this.mMovieData = Parcels.unwrap(bundle.getParcelable("movie_data"));
         this.mMovieUri = FavoritesContract.FavoriteEntry.CONTENT_URI.buildUpon()
-                .appendPath(mMovieData.movie_id)
+                .appendPath("m")
+                .appendPath(""+mMovieData.movie_id)
                 .build();
 
         ImageView poster = (ImageView) mView.findViewById(R.id.iv_poster);
@@ -88,14 +91,14 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
         mFavoriteButton.setOnClickListener(new FavButtonClickHandler());
 
-        refreshFavoriteStatus();
+        refreshFavoriteStatus(null);
 
         return mView;
     }
 
     private class FavButtonClickHandler implements View.OnClickListener {
         public void onClick(View v) {
-            boolean favorited = checkFavoriteStatus();
+            Boolean favorited = checkFavoriteStatus();
 
             if (favorited) {
                 int id = mContentResolver.delete(mMovieUri, null, null);
@@ -120,8 +123,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                 favorited = true;
             }
 
-            int favBtnLabelID = favorited ? R.string.unmark_favorite : R.string.mark_favorite;
-            mFavoriteButton.setText(getString(favBtnLabelID));
+            refreshFavoriteStatus(favorited);
         }
     }
 
@@ -136,9 +138,15 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         return (cursor.getCount() > 0);
     }
 
-    public void refreshFavoriteStatus() {
-        int favBtnLabelID = checkFavoriteStatus() ? R.string.unmark_favorite : R.string.mark_favorite;
+    public void refreshFavoriteStatus(Boolean status) {
+        status = (null == status) ? checkFavoriteStatus() : status;
+        int favBtnLabelID = status ? R.string.unmark_favorite : R.string.mark_favorite;
+        int favBtnIconID = status ? R.drawable.ic_fav_active_accent : R.drawable.ic_fav_inactive;
+
         mFavoriteButton.setText(getString(favBtnLabelID));
+        mFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(getActivity(), favBtnIconID),
+                null, null, null);
     }
 
 

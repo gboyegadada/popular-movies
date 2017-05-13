@@ -14,7 +14,7 @@
     <!-- PAGER STRIP OPTION LABELS -->
     <string name="tab_label_overview">OVERVIEW</string>
     <string name="tab_label_reviews">REVIEWS</string>
-    <string name="tab_label_videos">VIDEOS</string>
+    <string name="tab_label_videos">TRAILERS</string>
 
     <!-- ERROR MESSAGES -->
     <string name="error_message">I was unable to fetch your movie list. Would you like some coffee instead?</string>

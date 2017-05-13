@@ -2,14 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_movie_details"
+        app:tabMode="fixed"
+        app:tabBackground="@color/colorPrimary"
+        app:tabIndicatorColor="@color/colorAccent"
+        app:tabTextColor="@color/colorLight"
+        app:tabGravity="fill"
+        app:tabSelectedTextColor="@color/colorAccent"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabPaddingTop="@dimen/tab_padding_top"
+        app:tabPaddingBottom="@dimen/tab_padding_bottom"
+        app:tabIndicatorHeight="@dimen/tab_indicator_height"
+        android:layout_gravity="top"
+        android:textSize="@dimen/tab_text_size" />
+
     <android.support.v4.view.ViewPager xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/vp_movie_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".DetailsActivity" >
 
-        <android.support.v4.view.PagerTitleStrip
+        <!--
+        <android.support.v4.view.PagerTabStrip
             android:id="@+id/pts_movie_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,5 +39,6 @@
             android:background="@color/colorPrimary"
             android:textColor="@color/colorLight"
             android:textSize="20sp" />
+            -->
     </android.support.v4.view.ViewPager>
 </LinearLayout>

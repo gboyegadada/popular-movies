@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- VIDEO TILES -->
+    <dimen name="video_icon_width_height">40dp</dimen>
+    <dimen name="video_icon_margin_right">5dp</dimen>
+    <dimen name="video_tile_margin_top_bottom">0dp</dimen>
+    <dimen name="video_tile_margin_left_right">10dp</dimen>
+    <dimen name="video_tile_padding_top_bottom">10dp</dimen>
+    <dimen name="video_tile_padding_left_right">5dp</dimen>
+    <dimen name="video_tile_separator_line_thickness">1dp</dimen>
+
+    <!-- REVIEW TILES -->
+    <dimen name="review_tile_margin_top">10dp</dimen>
+    <dimen name="review_tile_margin_bottom">15dp</dimen>
+    <dimen name="review_tile_padding_top_bottom">15dp</dimen>
+
+    <!-- DETAILS TABS -->
+    <dimen name="tab_padding_top">10dp</dimen>
+    <dimen name="tab_padding_bottom">0dp</dimen>
+    <dimen name="tab_indicator_height">5dp</dimen>
+
+    <!-- DETAILS PAGES -->
+    <dimen name="page_padding_left_right">20dp</dimen>
+    <dimen name="page_padding_top_bottom">0dp</dimen>
+
+
+</resources>

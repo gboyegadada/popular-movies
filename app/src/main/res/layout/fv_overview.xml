@@ -84,13 +84,13 @@
                         android:layout_height="wrap_content"
                         android:text="@string/mark_favorite"
                         android:textColor="@color/colorLight"
-                        android:drawableLeft="@drawable/ic_favorites"
+                        android:drawableLeft="@drawable/ic_fav_inactive"
                         android:layout_marginTop="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingLeft="0dp"
                         android:paddingRight="10dp"
                         android:layout_gravity="start"
                         style="?android:attr/borderlessButtonStyle"
-                        android:background="@color/colorAccent"/>
+                        android:background="@null"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout

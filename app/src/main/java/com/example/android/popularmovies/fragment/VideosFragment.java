@@ -1,6 +1,8 @@
 package com.example.android.popularmovies.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -32,7 +34,6 @@ import java.util.MissingFormatArgumentException;
  */
 
 public class VideosFragment extends Fragment implements LoaderManager.LoaderCallbacks<VideoList> {
-    final protected static String QUERY_URL_EXTRA = "query_url_extra";
 
     /*
      * This number will uniquely identify our Loader and is chosen arbitrarily. You can change this
@@ -122,12 +123,14 @@ public class VideosFragment extends Fragment implements LoaderManager.LoaderCall
 
 
     public boolean loadData() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+
         // Nothing to put in here really
         Bundle queryBundle = new Bundle();
 
         LoaderManager loaderManager = getLoaderManager();
-        Loader<MovieList> mainActivityLoader = loaderManager.getLoader(VIDEOS_LOADER);
-        if (mainActivityLoader == null) {
+        Loader<MovieList> loader = loaderManager.getLoader(VIDEOS_LOADER);
+        if (loader == null) {
             loaderManager.initLoader(VIDEOS_LOADER, queryBundle, this);
         } else {
             loaderManager.restartLoader(VIDEOS_LOADER, queryBundle, this);
@@ -144,10 +147,8 @@ public class VideosFragment extends Fragment implements LoaderManager.LoaderCall
     private class RecyclerViewListener implements OnItemClickListener {
         @Override
         public void onClick(View view, VideoItem item) {
-            // Intent intent = new Intent(VideosFragment.this, DetailsActivity.class);
-            // intent.putExtra("data", Parcels.wrap(item));
-            // startActivity(intent);
-            // overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+item.key));
+            startActivity(i);
         }
     }
 
@@ -198,8 +199,14 @@ public class VideosFragment extends Fragment implements LoaderManager.LoaderCall
     private void showMovieListView() {
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the weather data is visible */
-        mRecyclerView.setVisibility(View.VISIBLE);
+        /* Then, make sure data is visible */
+        if (mAdapter.getItemCount() > 0) {
+            mNoItemsMessageDisplay.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mNoItemsMessageDisplay.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -220,12 +227,8 @@ public class VideosFragment extends Fragment implements LoaderManager.LoaderCall
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (data != null) {
-            showMovieListView();
             mAdapter.setData(data);
-
-            mNoItemsMessageDisplay.setVisibility(data.isEmpty()
-                    ? View.VISIBLE
-                    : View.INVISIBLE);
+            showMovieListView();
         } else {
             showErrorMessage();
         }

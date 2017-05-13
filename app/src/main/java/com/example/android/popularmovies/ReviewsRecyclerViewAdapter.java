@@ -1,7 +1,12 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.SpannedString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +48,11 @@ public class ReviewsRecyclerViewAdapter extends RecyclerView.Adapter<ReviewsRecy
         ReviewItem review = mList.get(pos);
 
         holder.author.setText(review.author);
-        holder.content.setText(review.content);
+        Spanned content = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                ? Html.fromHtml(review.content, Html.FROM_HTML_MODE_COMPACT)
+                : Html.fromHtml(review.content);
+
+        holder.content.setText(content);
     }
 
     @Override

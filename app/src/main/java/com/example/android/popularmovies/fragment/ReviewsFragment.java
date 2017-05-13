@@ -33,7 +33,6 @@ import java.util.MissingFormatArgumentException;
  */
 
 public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<ReviewList> {
-    final protected static String QUERY_URL_EXTRA = "query_url_extra";
 
     /*
      * This number will uniquely identify our Loader and is chosen arbitrarily. You can change this
@@ -117,12 +116,14 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
 
     public boolean loadData() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+
         // Nothing to put in here really
         Bundle queryBundle = new Bundle();
 
         LoaderManager loaderManager = getLoaderManager();
-        Loader<MovieList> mainActivityLoader = loaderManager.getLoader(REVIEWS_LOADER);
-        if (mainActivityLoader == null) {
+        Loader<MovieList> loader = loaderManager.getLoader(REVIEWS_LOADER);
+        if (loader == null) {
             loaderManager.initLoader(REVIEWS_LOADER, queryBundle, this);
         } else {
             loaderManager.restartLoader(REVIEWS_LOADER, queryBundle, this);
@@ -139,10 +140,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     private class RecyclerViewListener implements OnItemClickListener {
         @Override
         public void onClick(View view, ReviewItem item) {
-            // Intent intent = new Intent(ReviewsFragment.this, DetailsActivity.class);
-            // intent.putExtra("data", Parcels.wrap(item));
-            // startActivity(intent);
-            // overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+            // Do nothing...
         }
     }
 
@@ -193,8 +191,14 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     private void showMovieListView() {
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the weather data is visible */
-        mRecyclerView.setVisibility(View.VISIBLE);
+        /* Then, make sure the data is visible */
+        if (mAdapter.getItemCount() > 0) {
+            mNoItemsMessageDisplay.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mNoItemsMessageDisplay.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -215,16 +219,8 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (data != null) {
-            showMovieListView();
             mAdapter.setData(data);
-
-            mNoItemsMessageDisplay.setVisibility(data.isEmpty()
-                    ? View.VISIBLE
-                    : View.INVISIBLE);
-
-            Log.d(TAG, "Reviews count: "+data.size());
-            if (!data.isEmpty()) Log.d(TAG, "Review Content: "+data.get(0).author);
-
+            showMovieListView();
         } else {
             showErrorMessage();
         }

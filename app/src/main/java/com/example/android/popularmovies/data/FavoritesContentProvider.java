@@ -32,7 +32,7 @@ public class FavoritesContentProvider extends ContentProvider {
         uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES+"/#", FAVORITES_WITH_ID);
 
         // single item with movie_id
-        uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES+"/*", FAVORITES_WITH_MOVIE_ID);
+        uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES+"/m/#", FAVORITES_WITH_MOVIE_ID);
 
         return uriMatcher;
     }

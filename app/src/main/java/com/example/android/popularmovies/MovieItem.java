@@ -16,7 +16,7 @@ import org.parceler.Parcel;
 @Parcel
 public class MovieItem {
     public int row_id;
-    public String movie_id;
+    public int movie_id;
     public String title;
     public String original_title;
     public String overview;
@@ -35,7 +35,7 @@ public class MovieItem {
 
     public MovieItem(JSONObject json) {
         try {
-            movie_id = json.getString("id");
+            movie_id = json.getInt("id");
             title = json.getString("title");
             original_title = json.getString("original_title");
             overview = json.getString("overview");
@@ -48,9 +48,11 @@ public class MovieItem {
             running_time = "";
             release_time = "";
 
-        } catch (JSONException ex) {
+        } catch (JSONException e) {
             title = "No Title";
             overview = "No Overview";
+
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +74,7 @@ public class MovieItem {
         int posterPathIndex = cursor.getColumnIndex(FavoritesContract.FavoriteEntry.COLUMN_POSTER_PATH);
 
         row_id = cursor.getInt(rowIdIndex);
-        movie_id = cursor.getString(movieIdIndex);
+        movie_id = cursor.getInt(movieIdIndex);
         title = cursor.getString(titleIndex);
         original_title = cursor.getString(originalTitleIndex);
         overview = cursor.getString(overviewIndex);

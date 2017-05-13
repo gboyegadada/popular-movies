@@ -1,25 +1,15 @@
 package com.example.android.popularmovies;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.os.Bundle;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-import com.example.android.popularmovies.data.FavoritesContract;
 import com.example.android.popularmovies.fragment.OverviewFragment;
 import com.example.android.popularmovies.fragment.ReviewsFragment;
 import com.example.android.popularmovies.fragment.VideosFragment;
@@ -32,17 +22,12 @@ import java.util.Vector;
 
 public class DetailsActivity extends AppCompatActivity {
     MovieItem mMovieData;
-    Button mFavoriteButton;
     private DetailsPagerAdapter mPagerAdapter;
     private ViewPager mPager;
+    private TabLayout mTabs;
 
     private static final String TAG = DetailsActivity.class.getSimpleName();
 
-    /*
-     * This number will uniquely identify our Loader and is chosen arbitrarily. You can change this
-     * to any number you like, as long as you use the same variable name.
-     */
-    private static final int DETAILS_ACTIVITY_LOADER = 35;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +109,7 @@ public class DetailsActivity extends AppCompatActivity {
         mPager.setAdapter(this.mPagerAdapter);
         mPager.setCurrentItem(0);
 
-        PagerTitleStrip pagerStrip = (PagerTitleStrip) findViewById(R.id.pts_movie_details);
-        // TODO: add underline for selected title strip
+        mTabs = (TabLayout) findViewById(R.id.tl_movie_details);
+        mTabs.setupWithViewPager(mPager);
     }
 }
