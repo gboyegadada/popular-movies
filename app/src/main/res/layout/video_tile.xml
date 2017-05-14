@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -12,8 +13,7 @@
         android:paddingTop="@dimen/video_tile_padding_top_bottom"
         android:paddingBottom="@dimen/video_tile_padding_top_bottom"
         android:paddingLeft="@dimen/video_tile_padding_left_right"
-        android:paddingRight="@dimen/video_tile_padding_left_right"
-        android:clickable="true">
+        android:paddingRight="@dimen/video_tile_padding_left_right">
         <ImageView
             android:id="@+id/video_thumb"
             android:adjustViewBounds="true"

@@ -33,7 +33,7 @@
 
     <TextView android:id="@+id/tv_empty_videos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/empty_videos"
